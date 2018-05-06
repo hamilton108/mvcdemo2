@@ -1,0 +1,13 @@
+.idea/
+dbcp.properties
+netfonds.properties
+*.swp
+.gradle/
+dist/
+target/
+build/
+feed/
+*.log
+*.iml
+out/
+tmp/

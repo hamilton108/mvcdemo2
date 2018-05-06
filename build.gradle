@@ -1,0 +1,37 @@
+group 'hamilton108'
+version '1.0-SNAPSHOT'
+
+apply from: '/home/rcs/opt/java/gradlecommon/depversions.gradle'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+        //------------------- Database -------------------
+        runtime "org.mybatis:mybatis:$mybatisVersion"
+        runtime "org.postgresql:postgresql:$postgresVersion"
+
+        compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+        compile "args4j:args4j:$args4jVersion"
+        runtime "jline:jline:0.9.94"
+        //------------------- spring -------------------
+        runtime "org.springframework:spring-core:$springVersion"
+        runtime "org.springframework:spring-context:$springVersion"
+        compile "org.springframework:spring-webmvc:${springVersion}"
+
+        //------------------- Jetty -------------------
+        //runtime "org.eclipse.jetty:jetty-server:${jettyVersion}"
+        compile "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
+        compile "org.eclipse.jetty:jetty-webapp:${jettyVersion}"
+        compile "org.eclipse.jetty:jetty-jsp:${jettyVersion}"
+
+        //------------------- Thmeleaf -------------------
+        // https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf-spring4
+        compile "org.thymeleaf:thymeleaf-spring4:${thymeleafVersion}"
+        compile "org.thymeleaf:thymeleaf:${thymeleafVersion}"
+ }
