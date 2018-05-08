@@ -57,12 +57,14 @@ public class EmbeddedJetty {
         //contextHandler.addServlet(JspServlet.class, "*.jsp");
         
         // Spring
+        /*
         WebApplicationContext webAppContext = getWebApplicationContext();
         DispatcherServlet dispatcherServlet = new DispatcherServlet(webAppContext);
         ServletHolder springServletHolder = new ServletHolder("mvc-dispatcher", dispatcherServlet);
         contextHandler.addServlet(springServletHolder, MAPPING_URL);
         contextHandler.addEventListener(new ContextLoaderListener(webAppContext));
-        
+        */
+        WebAppContext
         return contextHandler;
     }
 
@@ -73,7 +75,7 @@ public class EmbeddedJetty {
         return context;
         */
         XmlWebApplicationContext context = new XmlWebApplicationContext();
-        context.setConfigLocation("/WEB-INF/spring-servlet.xml");
+        context.setConfigLocation("/WEB-INF");
         return context;
     }
     
