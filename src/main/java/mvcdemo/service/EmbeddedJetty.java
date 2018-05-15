@@ -7,7 +7,10 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.webapp.WebInfConfiguration;
+import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -37,17 +40,23 @@ public class EmbeddedJetty {
         Server server = new Server(port);
 
         WebAppContext context = new WebAppContext();
-        //context.setDescriptor(webapp + "/WEB-INF/web.xml");
+        //context.setDescriptor(WEBAPP_DIRECTORY + "/WEB-INF/web.xml");
+        //context.setDescriptor("/WEB-INF/web.xml");
+        String webapp = new ClassPathResource(WEBAPP_DIRECTORY).getURI().toString();
 
-        context.setDescriptor("/WEB-INF/web.xml");
-        String webapp = "/home/rcs/java/mvcdemo2/out/production/classes/webapp";
+        context.setDescriptor(webapp+"/WEB-INF/web.xml");
         context.setResourceBase(webapp);
         context.setContextPath("/");
         context.setParentLoaderPriority(true);
 
+        context.setConfigurations(new Configuration[]
+                {new WebXmlConfiguration(), new WebInfConfiguration()});
+                //new PlusConfiguration(), new MetaInfConfiguration(), new FragmentConfiguration(), new EnvConfiguration() });
+
         server.setHandler(context);
 
         server.start();
+        server.dump(System.err);
         server.join();
     }
 
