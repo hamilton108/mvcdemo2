@@ -4,8 +4,10 @@ import java.io.IOException;
 
 import org.apache.jasper.servlet.JspServlet;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 public class EmbeddedJetty {
 
+    // https://wiki.eclipse.org/Jetty/Tutorial/Embedding_Jetty
     private static final Logger LOGGER = LoggerFactory.getLogger(EmbeddedJetty.class);
     
     private static final int PORT = 9290;
@@ -27,10 +30,57 @@ public class EmbeddedJetty {
     private static final String WEBAPP_DIRECTORY = "webapp";
     
     public static void main(String[] args) throws Exception {
-        new EmbeddedJetty().startJetty(PORT);
+        new EmbeddedJetty().startJetty3(PORT);
     }
 
-    private void startJetty(int port) throws Exception {
+    private void startJetty3(int port) throws Exception {
+        Server server = new Server(port);
+
+        WebAppContext context = new WebAppContext();
+        //context.setDescriptor(webapp + "/WEB-INF/web.xml");
+
+        context.setDescriptor("/WEB-INF/web.xml");
+        String webapp = "/home/rcs/java/mvcdemo2/out/production/classes/webapp";
+        context.setResourceBase(webapp);
+        context.setContextPath("/");
+        context.setParentLoaderPriority(true);
+
+        server.setHandler(context);
+
+        server.start();
+        server.join();
+    }
+
+    private void startJetty2(int port) throws Exception {
+        Server server = new Server(port);
+
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.setContextPath("/");
+        server.setHandler(context);
+
+        context.addServlet(new ServletHolder(new HelloServlet()),"/*");
+        context.addServlet(new ServletHolder(new HelloServlet("Buongiorno Mondo")),"/it/*");
+        context.addServlet(new ServletHolder(new HelloServlet("Bonjour le Monde")),"/fr/*");
+
+        server.start();
+        server.join();
+    }
+    private void startJetty1(int port) throws Exception {
+        Server server = new Server(port);
+
+        ContextHandler context = new ContextHandler();
+        context.setContextPath("/hello");
+        context.setResourceBase(".");
+        context.setClassLoader(Thread.currentThread().getContextClassLoader());
+        server.setHandler(context);
+
+        context.setHandler(new HelloHandler());
+
+        server.start();
+        server.join();
+    }
+
+    private void xstartJetty(int port) throws Exception {
         LOGGER.debug("Starting server at port {}", port);
         Server server = new Server(port);
         
@@ -64,7 +114,7 @@ public class EmbeddedJetty {
         contextHandler.addServlet(springServletHolder, MAPPING_URL);
         contextHandler.addEventListener(new ContextLoaderListener(webAppContext));
         */
-        WebAppContext
+
         return contextHandler;
     }
 
